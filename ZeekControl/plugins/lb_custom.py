@@ -19,7 +19,7 @@ class LBCustom(ZeekControl.plugin.Plugin):
     def init(self):
         useplugin = False
 
-        for nn in self.nodes():
+        for fanout_id, nn in enumerate(self.nodes()):
             if nn.type != "worker" or nn.lb_method != "custom":
                 continue
 
@@ -28,6 +28,7 @@ class LBCustom(ZeekControl.plugin.Plugin):
             prefix = self.getOption("InterfacePrefix")
             suffix = self.getOption("InterfaceSuffix")
             nn.interface = "%s%s%s" % (prefix, nn.interface, suffix)
+            nn.env_vars = { "TESTIMONY_FANOUT_ID": fanout_id }
 
         return useplugin
 
